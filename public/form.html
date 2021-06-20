@@ -9,5 +9,32 @@
       email : <input type="text" name="email" /><br />
       <input type="submit" />
     </form>
+
+    <button class="ajaxsend">ajaxsend</button>
+
+    <die class="result"></die>
+
+    <script>
+      document.querySelector(".ajaxsend").addEventListener("click", () => {
+        var inputdata = document.forms[0].elements[0].value;
+        sendAjax("http://localhost:3000/ajax_send_email", inputdata);
+      });
+
+      var sendAjax = (url, data) => {
+        var data = { email: data };
+        data = JSON.stringify(data);
+
+        var xhr = new XMLHttpRequest();
+        xhr.open("POST", url);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.send(data);
+
+        xhr.addEventListener("load", () => {
+          var result = JSON.parse(xhr.responseText);
+          if (result.resule !== "ok") return;
+          document.querySelector(".result").innerHTML = result.email;
+        });
+      };
+    </script>
   </body>
 </html>

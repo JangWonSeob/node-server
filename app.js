@@ -9,6 +9,7 @@ app.listen(3000, () => {
 app.use(express.static("public"));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
   //res.send("<h1>hi friend!</h1>");
@@ -21,5 +22,12 @@ app.get("/main", (req, res) => {
 
 app.post("/email_post", (req, res) => {
   console.log(req.body.email);
-  res.send("welcome" + req.body.email);
+  //res.send("welcome" + req.body.email);
+  res.render("email.ejs", { email: req.body.email });
+});
+
+app.post("/ajax_send_email", (req, res) => {
+  console.log(req.body.email);
+  var responseData = { result: "ok", email: req.body.email };
+  res.json(responseData);
 });

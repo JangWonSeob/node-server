@@ -1,6 +1,15 @@
 const express = require("express"); // express를 express라는 이름으로 사용
 const app = express(); // app에서 express를 실행한다.
 const bodyParser = require("body-parser"); //body-parser을 bodyParser라는 이름으로 사용
+const mysql = require("mysql");
+
+var connection = mysql.createConnection({
+  host: "localhos",
+  port: 3306,
+  user: "root",
+  password: "mysql1",
+  database: "express_server",
+});
 
 app.listen(3000, () => {
   console.log("start!! express srver on part 3000");

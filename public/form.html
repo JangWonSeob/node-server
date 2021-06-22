@@ -31,8 +31,10 @@
 
         xhr.addEventListener("load", () => {
           var result = JSON.parse(xhr.responseText);
-          if (result.result !== "ok") return;
-          document.querySelector(".result").innerHTML = result.email;
+          var resultDiv = document.querySelector(".result");
+          if (result.result !== "ok")
+            resultDiv.innerHTML = "your email is not fount...";
+          resultDiv.innerHTML = result.name;
         });
       };
     </script>

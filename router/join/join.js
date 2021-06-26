@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const mysql = require("mysql");
 const path = require("path");
+const { runInNewContext } = require("vm");
 
 // Database Setting
 const connection = mysql.createConnection({
@@ -25,19 +26,16 @@ router.post("/", (req, res) => {
   var name = body.name;
   var password = body.password;
 
+  var sql = { email, name, pw: password };
   var query = connection.query(
-    'insert into user (name,email,pw) value ("' +
-      name +
-      '","' +
-      email +
-      '","' +
-      password +
-      '")',
+    "insert into user  set ? ",
+    sql,
     (error, rows) => {
       if (error) throw error;
-      console.log("ok db insert");
+      else res.render("welcome.ejs", { id: rows.insertId, name: body.name });
     }
   );
+  console.log(req.body);
 });
 
 module.exports = router;

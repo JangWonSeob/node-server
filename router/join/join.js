@@ -91,8 +91,8 @@ router.post(
 //   var query = connection.query(
 //     "insert into user set ? ",
 //     sql,
-//     (error, rows) => {
-//       if (error) throw error;
+//     (err, rows) => {
+//       if (err) throw err;
 //       else res.render("welcome.ejs", { id: rows.insertId, name: body.name });
 //     }
 //   );

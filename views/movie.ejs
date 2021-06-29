@@ -69,6 +69,17 @@
           case "get_all":
             url = "/movie";
             method = "GET";
+            fn = (result) => {
+              if (result.result === 1) {
+                let titles = result.data.reduce((pre, next) => {
+                  pre += "<li>" + next.title + "</li>";
+                  return pre;
+                }, "");
+                showResult.innerHTML = "<ul>" + titles + "</ul>";
+              } else {
+                showResult.innerHTML = "list not found";
+              }
+            };
             break;
           case "post":
             url = "/movie";
@@ -78,17 +89,64 @@
               pre[next.name] = next.value;
               return pre;
             }, {});
+            fn = (result) => {
+              if (result.result === 1)
+                showResult.innerHTML = "새로운 영화 데이터가 잘 추가됐습니다.";
+              else showResult.innerHTML = "list not found";
+            };
+            break;
+          case "get_id":
+            url = "/movie/" + li.getElementsByTagName("input")[0].value;
+            method = "GET";
+            fn = (result) => {
+              if (result.result === 1) {
+                showResult.innerHTML =
+                  "title : " +
+                  result.data[0].title +
+                  "<br/>" +
+                  "type : " +
+                  result.data[0].type +
+                  "<br/>" +
+                  "grade : " +
+                  result.data[0].grade +
+                  "<br/>" +
+                  "actor : " +
+                  result.data[0].actor;
+              } else {
+                showResult.innerHTML =
+                  '"' +
+                  li.getElementsByTagName("input")[0].value +
+                  '"' +
+                  " 영화의 정보가 없습니다.";
+              }
+            };
+            break;
+          case "delete_id":
+            url = "/movie/" + li.getElementsByTagName("input")[0].value;
+            method = "DELETE";
+            fn = (result) => {
+              if (result.result === 1) {
+                console.log("result 결과", result);
+                showResult.innerHTML =
+                  "선택한영화 " + '"' + result.title + '"' + "가 삭제됐습니다.";
+              } else {
+                showResult.innerHTML =
+                  '"' +
+                  li.getElementsByTagName("input")[0].value +
+                  '"' +
+                  " 영화가 없습니다.";
+              }
+            };
             break;
           default:
             // statements_def
             console.log("default");
             break;
         }
-
-        sendAjax("http://localhost:3000/movie", method, data, showResult);
+        sendAjax(url, method, data, fn);
       });
 
-      let sendAjax = (url, method, data, resultEle) => {
+      let sendAjax = (url, method, data, fn) => {
         const xhr = new XMLHttpRequest();
         xhr.open(method, url);
 
@@ -103,18 +161,7 @@
 
         xhr.addEventListener("load", () => {
           const result = JSON.parse(xhr.responseText);
-
-          if (result.result === 1) {
-            if (!result.data) {
-              resultEle.innerHTML = "새로운 영화 데이터가 추가되었습니다.";
-            } else {
-              let titles = result.data.reduce((pre, next) => {
-                pre += "<li>" + next.title + "</li>";
-                return pre;
-              }, "");
-              resultEle.innerHTML = "<ul>" + titles + "</ul>";
-            }
-          } else resultEle.innerHTML = "list not found";
+          fn(result);
         });
       };
     </script>

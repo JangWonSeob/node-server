@@ -36,6 +36,7 @@ router.get("/", (req, res) => {
   });
 });
 
+// 2. /moive , POST
 router.post("/", (req, res) => {
   let body = req.body;
   let title = body.title;
@@ -48,6 +49,54 @@ router.post("/", (req, res) => {
     if (err) throw err;
     else res.json({ result: 1 });
   });
+});
+
+// 3. /movie/:title , GET
+router.get("/:title", (req, res) => {
+  let title = req.params.title;
+  console.log("title => ", req.params.title);
+  var responseData = {};
+
+  var query = connection.query(
+    "select * from movie where title = ?",
+    [title],
+    (err, rows) => {
+      if (err) throw err;
+      if (rows[0]) {
+        console.log(rows);
+        responseData.result = 1;
+        responseData.data = rows;
+      } else {
+        responseData.result = 0;
+        responseData.data = "";
+      }
+      res.json(responseData);
+    }
+  );
+});
+
+// 4. /movie/:title , DELETE
+router.delete("/:title", (req, res) => {
+  let title = req.params.title;
+  console.log("title => ", req.params.title);
+  var responseData = {};
+
+  var query = connection.query(
+    "delete from movie where title = ?",
+    [title],
+    (err, rows) => {
+      if (err) throw err;
+      console.log("rows is ->", rows);
+      if (rows.affectedRows !== 0) {
+        responseData.result = 1;
+        responseData.title = title;
+      } else {
+        responseData.result = 0;
+        responseData.data = "";
+      }
+      res.json(responseData);
+    }
+  );
 });
 
 // router.post("/ajax", (req, res) => {
